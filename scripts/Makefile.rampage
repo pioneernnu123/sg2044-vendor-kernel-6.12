@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-2.0-only
+# Keep the original RAMpage module's device registration and ABI. Its old
+# allocator and VMA implementation cannot be used with Linux 6.12 internals.
+ifneq ($(KBUILD_EXTMOD),)
+ifneq ($(filter phys_mem.o,$(obj-m)),)
+ifeq ($(filter main.o file_operations.o mmap_phys.o,$(phys_mem-objs)),main.o file_operations.o mmap_phys.o)
+ifneq ($(wildcard $(src)/include/phys_mem_int.h),)
+phys_mem-objs := main.o
+ccflags-y += -I$(src)/include -Dphys_mem_fops=rampage_phys_mem_fops
+endif
+endif
+endif
+endif
